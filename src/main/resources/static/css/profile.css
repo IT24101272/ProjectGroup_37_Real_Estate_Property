@@ -1,0 +1,74 @@
+/* General Card Styling */
+.card {
+    border-radius: 10px;
+    border: 1px solid #D4AF37;
+}
+
+.card-header {
+    background-color: #1B998B;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Input Styling */
+.form-control,
+.form-select {
+    border-radius: 5px;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Button Colors */
+.btn-primary {
+    background-color: #D4AF37;
+    border-color: #D4AF37;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #c99b2f;
+    border-color: #c99b2f;
+}
+
+.btn-warning {
+    background-color: #1B998B;
+    border-color: #1B998B;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background-color: #178c7c;
+    border-color: #178c7c;
+}
+
+.btn-danger {
+    background-color: #545454;
+    border-color: #545454;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #3d3d3d;
+    border-color: #3d3d3d;
+}
+
+.btn-secondary {
+    background-color: #D4AF37;
+    border-color: #D4AF37;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #c99b2f;
+    border-color: #c99b2f;
+}

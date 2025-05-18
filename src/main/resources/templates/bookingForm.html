@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book a Property Viewing</title>
+    <link rel="icon" type="image/png" th:href="@{/css/images/favicon.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/css/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(10px);
+            z-index: -1;
+        }
+        body {
+            background-color: #f8f9fa;
+            color: #03942a;
+        }
+        h2 {
+            color: #03942a;
+            border-bottom: 2px solid #95a802;
+            padding-bottom: 10px;
+        }
+        .btn-primary {
+            background-color: #03942a;
+            border-color: #03942a;
+        }
+        .btn-primary:hover {
+            background-color: #95a802;
+            border-color: #95a802;
+        }
+        .btn-secondary {
+            background-color: #95a802;
+            border-color: #95a802;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #03942a;
+            border-color: #03942a;
+        }
+        label {
+            color: #03942a;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-5">
+    <h2>Book a Viewing</h2>
+
+    <form th:action="@{/bookings/new}" th:object="${booking}" method="post" class="mt-4">
+        <input type="hidden" th:field="*{buyerId}">
+        <input type="hidden" th:field="*{propertyId}">
+        <div class="mb-3">
+            <label for="message" class="form-label">Message</label>
+            <textarea th:field="*{message}" class="form-control" id="message" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="scheduledDate" class="form-label">Scheduled Date</label>
+            <input type="date" th:field="*{scheduledDate}" class="form-control" id="scheduledDate" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Booking</button>
+        <a th:href="@{/properties/all}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
