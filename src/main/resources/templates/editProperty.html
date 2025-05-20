@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Property</title>
+    <link rel="icon" type="image/png" th:href="@{/css/images/favicon.png}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/css/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(10px);
+            z-index: -1;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #03942a;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .form-label {
+            color: #03942a;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #03942a;
+            border-color: #03942a;
+        }
+        .btn-primary:hover {
+            background-color: #95a802;
+            border-color: #95a802;
+        }
+        .btn-secondary {
+            background-color: #95a802;
+            border-color: #95a802;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #03942a;
+            border-color: #03942a;
+        }
+        .form-text {
+            color: #6c757d;
+        }
+        .img-thumbnail {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center mb-0">
+                        <i class="bi bi-house-gear me-2"></i>Edit Property
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/properties/edit/{id}(id=${property.propertyId})}"
+                          method="post" enctype="multipart/form-data">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+                        <!-- Basic Information Section -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title"
+                                   th:value="${property.title}" required>
+                        </div>
+
+                        <!-- Category Selection -->
+                        <div class="mb-3">
+                            <label for="categoryId" class="form-label">Category</label>
+                            <select class="form-select" id="categoryId" name="categoryId" required>
+                                <option value="">Select a category</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.categoryId}"
+                                        th:text="${category.name}"
+                                        th:selected="${property.categoryId == category.categoryId}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description"
+                                      rows="4" th:text="${property.description}" required></textarea>
+                        </div>
+
+                        <!-- Price and Location -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">Price (LKR)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">LKR</span>
+                                    <input type="number" step="0.01" class="form-control" id="price"
+                                           name="price" th:value="${property.price}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="location"
+                                       name="location" th:value="${property.location}" required>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload Section -->
+                        <div class="mb-3 mt-4">
+                            <label class="form-label">Current Image</label>
+                            <div th:if="${property.imagePath}" class="mb-3">
+                                <img th:src="@{'/uploads/properties/' + ${property.imagePath}}"
+                                     class="img-thumbnail d-block"
+                                     style="max-width: 300px; max-height: 200px; object-fit: cover;">
+                                <small class="text-muted">Current property image</small>
+                            </div>
+                            <label for="imageFile" class="form-label">Update Image</label>
+                            <input type="file" class="form-control" id="imageFile"
+                                   name="imageFile" accept="image/*">
+                            <div class="form-text">Leave blank to keep current image (Max 5MB, JPG/PNG)</div>
+                        </div>
+
+                        <!-- Availability Toggle -->
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="available" name="available" th:checked="${property.available}">
+                            <label class="form-check-label" for="available">
+                                Property Available for Sale
+                            </label>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a th:href="@{/properties/seller}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i> Update Property
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

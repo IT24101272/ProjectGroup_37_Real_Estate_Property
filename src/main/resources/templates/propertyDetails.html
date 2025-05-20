@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${property.title}">Property Details</title>
+    <link rel="icon" type="image/png" th:href="@{/css/images/favicon.png}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.8)), /* white overlay */
+                    url('/css/images/background.jpg'); /* image layer */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(10px);
+            z-index: -1;
+        }
+
+        h2, h4, h5 {
+            color: #03942a;
+        }
+        .card-header {
+            background-color: #03942a;
+            color: #fff;
+        }
+        .btn-primary {
+            background-color: #95a802;
+            border-color: #95a802;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #03942a;
+            border-color: #03942a;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-outline-primary {
+            color: #95a802;
+            border-color: #95a802;
+        }
+        .btn-outline-primary:hover {
+            background-color: #95a802;
+            color: white;
+        }
+        .btn-outline-danger {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-success {
+            background-color: #03942a;
+            border-color: #03942a;
+        }
+        .btn-success:hover {
+            background-color: #95a802;
+            border-color: #95a802;
+        }
+        .badge.bg-success {
+            background-color: #03942a !important;
+        }
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+        .text-primary {
+            color: #95a802 !important;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-5" th:if="${property != null}">
+    <div class="row">
+        <div class="col-md-8">
+            <div th:if="${property.imagePath != null and !property.imagePath.isEmpty()}">
+                <img th:src="@{'/uploads/properties/' + ${property.imagePath}}"
+                     class="img-fluid rounded mb-4" alt="Property image">
+            </div>
+            <div th:unless="${property.imagePath != null and !property.imagePath.isEmpty()}">
+                <div class="bg-light p-5 text-center mb-4">
+                    <i class="bi bi-image" style="font-size: 2rem;"></i>
+                    <p>No image available</p>
+                </div>
+            </div>
+
+            <h2 th:text="${property.title} ?: 'No title provided'"></h2>
+            <h4 class="text-primary"
+                th:text="${property.price != null} ? ( ${#numbers.formatDecimal(property.price, 1, 2)}) + ' Lkr' : 'Price not set'"></h4>
+            <p class="text-muted" th:if="${property.categoryId != null}">
+                Category: <span th:text="${categoryName}"></span>
+            </p>
+            <p class="text-muted" th:text="${property.location} ?: 'Location not specified'"></p>
+
+            <div class="d-flex justify-content-between mb-4">
+                <span th:if="${property.available != null and property.available}" class="badge bg-success">Available</span>
+                <span th:if="${property.available != null and !property.available}" class="badge bg-danger">Sold</span>
+                <small class="text-muted">Property ID: <span th:text="${property.propertyId} ?: 'N/A'"></span></small>
+            </div>
+
+            <h4>Description</h4>
+            <p class="mb-4" th:text="${property.description} ?: 'No description provided'"></p>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-5">
+                <a th:href="@{/properties/all}" th:if="${session.user.role != 'ADMIN'}" class="btn btn-outline-secondary me-md-2">Back to Listings</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Contact Seller</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Interested in this property?</p>
+                    <p>Posted by: <span th:text="${seller.name}">Seller Name</span></p>
+                    <p>Email: <span th:text="${seller.email}">Seller Email</span></p>
+                    <a th:if="${seller.email != null}"
+                       th:href="@{'mailto:' + ${seller.email}}"
+                       class="btn btn-primary">Email Seller</a>
+                    <p th:if="${seller.email == null}" class="text-muted">Contact info not available</p>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4" th:if="${session.user != null and session.user.role == 'BUYER'}">
+                <a th:href="@{'/bookings/new/' + ${property.propertyId}}" class="btn btn-success">Book Viewing</a>
+
+                <div th:if="${!isBookmarked}">
+                    <form th:action="@{/favorites/add}" method="post">
+                        <input type="hidden" name="userId" th:value="${session.user.userId}" />
+                        <input type="hidden" name="propertyId" th:value="${property.propertyId}" />
+                        <input type="hidden" name="status" value="Interested" />
+                        <button type="submit" class="btn btn-outline-primary">Add To Favorites</button>
+                    </form>
+                </div>
+                <div th:if="${isBookmarked}">
+                    <form th:action="@{/favorites/delete}" method="post">
+                        <input type="hidden" name="userId" th:value="${session.user.userId}" />
+                        <input type="hidden" name="propertyId" th:value="${property.propertyId}" />
+                        <button type="submit" class="btn btn-outline-danger"
+                                onclick="return confirm('Remove this property from your favorites?')">
+                            Remove from Favorites
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title">Location</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text" th:text="${property.location} ?: 'Location not specified'"></p>
+                    <div class="bg-light p-3 text-center">
+                        <i class="bi bi-map" style="font-size: 2rem;"></i>
+                        <p class="mt-2">Map would display here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Reviews & Ratings</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(reviews)}">
+                        <p class="text-muted">No reviews yet.</p>
+                    </div>
+
+                    <ul class="list-group list-group-flush mb-3" th:if="${!#lists.isEmpty(reviews)}">
+                        <li class="list-group-item" th:each="review : ${reviews}">
+                            <div th:unless="${editReview != null and editReview.reviewID == review.reviewID}">
+                                <strong>
+                                    <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
+                                    <span th:text="' (' + review.rating + '/5)'"></span>
+                                </strong>
+                                <p class="mb-1" th:text="${review.comment}"></p>
+
+                                <div th:if="${review.userID == sessionUserId}" class="mt-2">
+                                    <a th:href="@{'/properties/' + ${property.propertyId} + '?editReviewId=' + ${review.reviewID}}"
+                                       class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                    <a th:href="@{'/reviews/delete/' + ${review.reviewID} + '/' + ${review.propertyID}}"
+                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div th:if="${editReview != null}">
+                        <form th:action="@{/reviews/edit}" method="post" th:object="${editReview}">
+                            <input type="hidden" th:field="*{reviewID}" />
+                            <input type="hidden" th:field="*{propertyID}" />
+                            <input type="hidden" th:field="*{userID}" />
+
+                            <div class="mb-3">
+                                <label class="form-label">Your Rating (1-5)</label>
+                                <input type="number" min="1" max="5" th:field="*{rating}"
+                                       class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Your Review</label>
+                                <textarea th:field="*{comment}" class="form-control" rows="3" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update Review</button>
+                            <a th:href="@{'/properties/' + ${property.propertyId}}"
+                               class="btn btn-secondary ms-2">Cancel</a>
+                        </form>
+                    </div>
+
+                    <div th:if="${canReview and editReview == null}">
+                        <form th:action="@{/reviews/add}" method="post" th:object="${newReview}">
+                            <input type="hidden" th:field="*{reviewID}" />
+                            <input type="hidden" th:field="*{propertyID}" />
+                            <input type="hidden" th:field="*{userID}" />
+
+                            <div class="mb-3">
+                                <label class="form-label">Your Rating (1-5)</label>
+                                <input type="number" min="1" max="5" th:field="*{rating}"
+                                       class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Your Review</label>
+                                <textarea th:field="*{comment}" class="form-control" rows="3" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+
+                    <div th:if="${not canReview and editReview == null}">
+                        <p class="text-muted">You've already submitted a review for this property.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5" th:if="${property == null}">
+    <div class="alert alert-danger">
+        <h4>Property Not Found</h4>
+        <p>The requested property could not be found.</p>
+        <a th:href="@{/properties/all}" class="btn btn-primary">View All Properties</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
