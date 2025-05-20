@@ -1,7 +1,6 @@
 package com.realEstate.service;
 
 import com.realEstate.model.Category;
-import com.realEstate.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

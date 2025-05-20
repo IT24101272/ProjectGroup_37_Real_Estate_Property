@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -96,18 +95,5 @@ public class UserService {
         User user = getUserById(userId);
         user.setRole(newRole);
         return userRepository.update(user);
-    }
-
-    public List<User> getAllSellers() {
-        return userRepository.findAll().stream()
-                .filter(user -> User.ROLE_SELLER.equals(user.getRole()))
-                .collect(Collectors.toList());
-    }
-
-    public List<User> getAllAdmins() {
-        return userRepository.findAll().stream()
-                .filter(user -> User.ROLE_ADMIN.equals(user.getRole()))
-                .collect(Collectors.toList());
-
     }
 }

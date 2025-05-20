@@ -2,7 +2,6 @@ package com.realEstate.controller;
 
 import com.realEstate.model.Booking;
 import com.realEstate.model.User;
-import com.realEstate.service.BookingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

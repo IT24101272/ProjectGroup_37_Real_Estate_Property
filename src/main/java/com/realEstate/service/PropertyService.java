@@ -2,7 +2,6 @@ package com.realEstate.service;
 
 import com.realEstate.model.Category;
 import com.realEstate.model.Property;
-import com.realEstate.repository.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

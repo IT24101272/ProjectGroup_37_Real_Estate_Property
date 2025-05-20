@@ -1,9 +1,7 @@
 package com.realEstate.controller;
 
 import com.realEstate.model.User;
-import com.realEstate.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
