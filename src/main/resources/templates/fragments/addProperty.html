@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isAdmin} ? 'Add Property (Admin)' : 'Add Property'">Add New Property</title>
+    <link rel="icon" type="image/png" th:href="@{/css/images/favicon.png}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/css/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(10px);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body style="background-color: #f8f9fa;">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow rounded-4">
+                <div class="card-header text-white" style="background-color: #03942a;">
+                    <h3 class="text-center mb-0" th:text="${isAdmin} ? 'Add New Property (Admin)' : 'Add New Property'">Add New Property</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{${isAdmin} ? '/admin/properties/add' : '/properties/add'}"
+                          method="post" enctype="multipart/form-data">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" th:value="${property?.title}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoryId" class="form-label">Category</label>
+                            <select class="form-select" id="categoryId" name="categoryId" required>
+                                <option value="">Select a category</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.categoryId}"
+                                        th:text="${category.name}"
+                                        th:selected="${property?.categoryId == category.categoryId}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required
+                                      th:text="${property?.description}"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label">Price (LKR)</label>
+                                <input type="number" step="0.01" min="0" class="form-control"
+                                       id="price" name="price" th:value="${property?.price}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="location" name="location"
+                                       th:value="${property?.location}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label">Property Image</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile"
+                                   accept="image/jpeg, image/png" required>
+                            <div class="form-text">Maximum file size: 5MB. Supported formats: JPG, PNG.</div>
+                        </div>
+
+                        <!-- Seller selection for admin only -->
+                        <div class="mb-3" th:if="${isAdmin}">
+                            <label for="sellerId" class="form-label">Seller</label>
+                            <select class="form-select" id="sellerId" name="sellerId" required>
+                                <option value="">Select a seller</option>
+                                <option th:each="seller : ${sellers}"
+                                        th:value="${seller.userId}"
+                                        th:text="${seller.name}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn text-white" style="background-color: #03942a;">
+                                <i class="bi bi-plus-circle me-2"></i>Add Property
+                            </button>
+                            <a th:href="@{${isAdmin} ? '/admin/properties' : '/properties/seller'}"
+                               class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
