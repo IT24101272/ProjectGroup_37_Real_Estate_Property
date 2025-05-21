@@ -2,6 +2,7 @@ package com.realEstate.service;
 
 import com.realEstate.model.Booking;
 import com.realEstate.model.Property;
+import com.realEstate.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

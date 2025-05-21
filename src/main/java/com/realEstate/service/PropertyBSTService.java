@@ -2,6 +2,7 @@ package com.realEstate.service;
 
 import com.realEstate.model.Property;
 import com.realEstate.model.PropertyNode;
+import com.realEstate.repository.PropertyRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

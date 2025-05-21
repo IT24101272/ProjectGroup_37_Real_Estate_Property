@@ -1,6 +1,8 @@
 package com.realEstate.controller;
 
 import com.realEstate.model.Review;
+import com.realEstate.service.ReviewService;
+import com.realEstate.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

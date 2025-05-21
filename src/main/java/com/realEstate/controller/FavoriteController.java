@@ -3,6 +3,8 @@ package com.realEstate.controller;
 import com.realEstate.model.Favorite;
 import com.realEstate.model.Property;
 import com.realEstate.model.User;
+import com.realEstate.service.FavoriteService;
+import com.realEstate.service.PropertyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

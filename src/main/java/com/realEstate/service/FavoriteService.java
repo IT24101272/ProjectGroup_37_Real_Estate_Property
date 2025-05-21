@@ -1,6 +1,7 @@
 package com.realEstate.service;
 
 import com.realEstate.model.Favorite;
+import com.realEstate.repository.FavoriteRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

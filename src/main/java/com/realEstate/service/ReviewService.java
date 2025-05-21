@@ -1,6 +1,7 @@
 package com.realEstate.service;
 
 import com.realEstate.model.Review;
+import com.realEstate.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
