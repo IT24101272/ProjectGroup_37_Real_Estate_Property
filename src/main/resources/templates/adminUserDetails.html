@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link rel="icon" type="image/png" th:href="@{/css/images/favicon.png}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/css/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: blur(10px);
+            z-index: -1;
+        }
+        .detail-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .property-card {
+            transition: transform 0.2s;
+        }
+        .property-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body style="background-color: #f8f9fa;">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: #03942a;">User Details</h2>
+        <a th:href="@{/admin/users}" class="btn" style="background-color: #03942a; color: white;">
+            <i class="bi bi-arrow-left" style="color: white;"></i> Back to Users
+        </a>
+    </div>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="row">
+        <!-- User Information Card -->
+        <div class="col-md-6 mb-4">
+            <div class="detail-card p-4 h-100">
+                <h4 class="mb-4" style="color: #03942a; border-bottom: 2px solid #95a802; padding-bottom: 8px;">
+                    <i class="bi bi-person-circle" style="color: #95a802;"></i> Basic Information
+                </h4>
+
+                <div class="row mb-3">
+                    <div class="col-4 fw-bold" style="color: #03942a;">User ID:</div>
+                    <div class="col-8" th:text="${user.userId}"></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4 fw-bold" style="color: #03942a;">Name:</div>
+                    <div class="col-8" th:text="${user.name}"></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4 fw-bold" style="color: #03942a;">Email:</div>
+                    <div class="col-8" th:text="${user.email}"></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4 fw-bold" style="color: #03942a;">Role:</div>
+                    <div class="col-8">
+            <span th:switch="${user.role}" class="badge">
+              <span th:case="'ADMIN'" class="badge bg-primary">Admin</span>
+              <span th:case="'SELLER'" class="badge bg-success">Seller</span>
+              <span th:case="'BUYER'" class="badge bg-info">Buyer</span>
+            </span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3" style="border-top: 1px solid #dee2e6;">
+                    <form th:action="@{/admin/users/delete/{userId}(userId=${user.userId})}"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to delete this user?')">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Delete User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Section (for sellers) -->
+        <div class="col-md-6" th:if="${user.role == 'SELLER'}">
+            <div class="detail-card p-4 h-100">
+                <h4 class="mb-4" style="color: #03942a; border-bottom: 2px solid #95a802; padding-bottom: 8px;">
+                    <i class="bi bi-house" style="color: #95a802;"></i> Listed Properties
+                    <span class="badge bg-secondary ms-2" th:text="${properties.size()}"></span>
+                </h4>
+
+                <div th:if="${properties.empty}" class="alert alert-info">
+                    This seller hasn't listed any properties yet.
+                </div>
+
+                <div th:unless="${properties.empty}" class="row row-cols-1 g-3">
+                    <div class="col" th:each="property : ${properties}">
+                        <div class="property-card p-3 rounded-3" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <img th:if="${property.imagePath}"
+                                         th:src="@{'/uploads/properties/' + ${property.imagePath}}"
+                                         style="width: 80px; height: 60px; object-fit: cover;"
+                                         class="img-thumbnail me-3">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 th:text="${property.title}" style="color: #03942a;"></h6>
+                                    <div class="d-flex justify-content-between">
+                    <span th:text="${#numbers.formatDecimal(property.price, 1, 2)} + ' Lkr'"
+                          style="color: #95a802; font-weight: 500;"></span>
+                                        <span th:if="${property.available}" class="badge bg-success">Available</span>
+                                        <span th:unless="${property.available}" class="badge bg-danger">Sold</span>
+                                    </div>
+                                    <a th:href="@{/properties/{id}(id=${property.propertyId})}"
+                                       class="btn btn-sm mt-2"
+                                       style="background-color: #95a802; color: white;">
+                                        <i class="bi bi-eye"></i> View Property
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
