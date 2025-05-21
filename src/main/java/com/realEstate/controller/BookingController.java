@@ -18,9 +18,7 @@ public class BookingController {
     private BookingService bookingService;
 
     @GetMapping("/new/{propertyId}")
-    public String showBookingForm(@PathVariable("propertyId") String propertyId,
-                                  HttpSession session,
-                                  Model model) {
+    public String showBookingForm(@PathVariable("propertyId") String propertyId, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         Booking booking = new Booking();
         booking.setBuyerId(user.getUserId());
